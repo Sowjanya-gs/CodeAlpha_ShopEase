@@ -1,0 +1,555 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ product.name }} | ShopEase</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        header {
+            background: #192957;
+            color: white;
+            padding: 20px 8%;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .product-card {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            gap: 35px;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px #00000012;
+        }
+
+        .product-image {
+            flex: 1 1 300px;
+            min-height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #eef4ff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            display: block;
+            width: 100%;
+            max-height: 380px;
+            object-fit: contain;
+        }
+
+        .placeholder {
+            font-size: 90px;
+        }
+
+        .product-info {
+            flex: 1 1 300px;
+            padding: 5px;
+        }
+
+        .product-info h2 {
+            margin-top: 10px;
+            font-size: 28px;
+        }
+
+        .price {
+            color: #2563eb;
+            font-size: 30px;
+            font-weight: bold;
+            margin: 22px 0;
+        }
+
+        .description {
+            color: #555;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        .stock {
+            margin: 22px 0;
+            color: #087443;
+            font-weight: bold;
+        }
+
+        .quantity-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        input[type="number"] {
+            width: 85px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 13px 22px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #add-to-cart {
+            background: #2563eb;
+        }
+
+        #add-to-cart:hover {
+            background: #1d4ed8;
+        }
+
+        #buy-now {
+            background: #f59e0b;
+            color: #222;
+        }
+
+        #buy-now:hover {
+            background: #d97706;
+        }
+
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        #message {
+            margin-top: 18px;
+            font-weight: bold;
+            line-height: 1.5;
+        }
+
+        .out-of-stock {
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px 5%;
+            }
+
+            header h1 {
+                font-size: 29px;
+            }
+
+            .container {
+                margin: 15px auto;
+                padding: 12px;
+            }
+
+            .product-card {
+                padding: 18px;
+                gap: 20px;
+            }
+
+            .product-image {
+                min-height: 220px;
+            }
+
+            .product-info h2 {
+                font-size: 24px;
+            }
+
+            .price {
+                font-size: 26px;
+            }
+
+            .quantity-row {
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>
+            <a href="{% url 'product_list' %}">ShopEase &#128722;</a>
+        </h1>
+    </header>
+
+    <main class="container">
+
+        <a class="back-link" href="{% url 'product_list' %}">
+            &#8592; Back to Products
+        </a>
+
+        <section class="product-card">
+
+            <div class="product-image">
+                {% if product.image_url %}
+                    <img
+                        src="{{ product.image_url }}"
+                        alt="{{ product.name }}"
+                    >
+                {% else %}
+                    <span class="placeholder" aria-label="Product">
+                        &#128722;
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="product-info">
+
+                <h2>{{ product.name }}</h2>
+
+                <p class="price">
+                    &#8377;{{ product.price }}
+                </p>
+                
+
+<div class="rating-section">
+    <div class="rating-stars">
+        <span style="color: #f5a623; font-size: 25px;">
+            ★★★★☆
+        </span>
+
+        <strong>{{ display_rating|floatformat:1 }}/5</strong>
+    </div>
+
+    <p>
+        {% if review_count > 0 %}
+            {{ review_count }} customer review{{ review_count|pluralize }}
+        {% else %}
+            Sample product rating (not yet customer-verified)
+        {% endif %}
+    </p>
+</div>
+
+
+       
+
+
+                <p class="description">
+                    {{ product.description }}
+                </p>
+
+                {% if product.stock > 0 %}
+
+                    <p class="stock">
+                        In stock: {{ product.stock }}
+                    </p>
+
+                    <div class="quantity-row">
+
+                        <label for="quantity">Quantity:</label>
+
+                        <input
+                            type="number"
+                            id="quantity"
+                            min="1"
+                            max="{{ product.stock }}"
+                            value="1"
+                            step="1"
+                        >
+
+                        <button id="add-to-cart" type="button">
+                            Add to Cart &#128722;
+                        </button>
+
+                        <button id="buy-now" type="button">
+                            Buy Now &#9889;
+                        </button>
+
+                    </div>
+
+                {% else %}
+
+                    <p class="out-of-stock">
+                        Out of stock
+                    </p>
+
+                    <button type="button" disabled>
+                        Out of Stock
+                    </button>
+
+                {% endif %}
+
+                <p id="message" role="status" aria-live="polite"></p>
+
+            </div>
+
+        </section>
+    
+<section class="reviews-section">
+    <h2>Customer Reviews</h2>
+
+    {% if is_authenticated %}
+        <form
+            method="POST"
+            action="{% url 'submit_review' product.id %}"
+        >
+            {% csrf_token %}
+
+            <label for="rating">Your Rating:</label>
+
+            <select id="rating" name="rating" required>
+                <option value="">Choose a rating</option>
+                <option value="5">★★★★★ - Excellent</option>
+                <option value="4">★★★★ - Very Good</option>
+                <option value="3">★★★ - Good</option>
+                <option value="2">★★ - Fair</option>
+                <option value="1">★ - Poor</option>
+            </select>
+
+            <label for="comment">Your Review:</label>
+
+            <textarea
+                id="comment"
+                name="comment"
+                rows="4"
+                placeholder="Share your experience with this product..."
+                required
+            ></textarea>
+
+            <button type="submit">
+                Submit Review
+            </button>
+        </form>
+    {% else %}
+        <p>
+            Please <a href="{% url 'login_signup' %}">log in</a>
+            to submit a review.
+        </p>
+    {% endif %}
+
+    <div class="review-list">
+        {% for review in reviews %}
+            <article class="review-item">
+                <h3>{{ review.user.username }}</h3>
+
+                <p class="review-stars">
+                    <span style="color: #f5a623;">
+                        {% if review.rating == 5 %}★★★★★
+                        {% elif review.rating == 4 %}★★★★☆
+                        {% elif review.rating == 3 %}★★★☆☆
+                        {% elif review.rating == 2 %}★★☆☆☆
+                        {% else %}★☆☆☆☆
+                        {% endif %}
+                    </span>
+                </p>
+
+                <p>{{ review.comment }}</p>
+
+                <small>{{ review.created_at|date:"d M Y" }}</small>
+            </article>
+        {% empty %}
+            <p>No written reviews yet.</p>
+        {% endfor %}
+    </div>
+</section>
+
+    </main>
+
+    <script>
+        "use strict";
+
+        const product = {
+            id: "{{ product.id|escapejs }}",
+            name: "{{ product.name|escapejs }}",
+            price: "{{ product.price }}",
+            stock: Number("{{ product.stock }}")
+        };
+
+        const addToCartButton =
+            document.getElementById("add-to-cart");
+
+        const buyNowButton =
+            document.getElementById("buy-now");
+
+        const message =
+            document.getElementById("message");
+
+        const quantityInput =
+            document.getElementById("quantity");
+
+        function getQuantity() {
+            const quantity = Number(quantityInput.value);
+
+            if (
+                !Number.isInteger(quantity) ||
+                quantity < 1 ||
+                quantity > product.stock
+            ) {
+                message.style.color = "red";
+                message.textContent =
+                    "Please enter a valid quantity within the available stock.";
+
+                return null;
+            }
+
+            return quantity;
+        }
+
+        // ADD TO CART
+        if (addToCartButton) {
+
+            addToCartButton.addEventListener("click", function () {
+
+                const quantity = getQuantity();
+
+                if (quantity === null) {
+                    return;
+                }
+
+                let cart = {};
+
+                try {
+                    const savedCart = localStorage.getItem(
+                        "shopeaseProductCart"
+                    );
+
+                    cart = savedCart ? JSON.parse(savedCart) : {};
+
+                    if (
+                        !cart ||
+                        typeof cart !== "object" ||
+                        Array.isArray(cart)
+                    ) {
+                        cart = {};
+                    }
+
+                } catch (error) {
+                    cart = {};
+                }
+
+                const key = String(product.id);
+
+                const currentQuantity = Number(cart[key] || 0);
+
+                if (
+                    !Number.isInteger(currentQuantity) ||
+                    currentQuantity < 0
+                ) {
+                    message.style.color = "red";
+                    message.textContent =
+                        "Unable to read your cart. Please clear your cart and try again.";
+
+                    return;
+                }
+
+                const newQuantity = currentQuantity + quantity;
+
+                if (newQuantity > product.stock) {
+                    message.style.color = "red";
+                    message.textContent =
+                        "You cannot add more than the available stock.";
+
+                    return;
+                }
+
+                cart[key] = newQuantity;
+
+                try {
+                    localStorage.setItem(
+                        "shopeaseProductCart",
+                        JSON.stringify(cart)
+                    );
+
+                    message.style.color = "green";
+                    message.textContent =
+                        product.name +
+                        " added to your cart successfully!";
+
+                } catch (error) {
+                    message.style.color = "red";
+                    message.textContent =
+                        "Unable to save your cart. Check your browser storage settings.";
+                }
+
+            });
+
+        }
+
+        // BUY NOW
+        if (buyNowButton) {
+
+            buyNowButton.addEventListener("click", function () {
+
+                const quantity = getQuantity();
+
+                if (quantity === null) {
+                    return;
+                }
+
+                try {
+
+                    sessionStorage.setItem(
+                        "shopeaseBuyNowItem",
+                        JSON.stringify({
+                            id: product.id,
+                            quantity: quantity
+                        })
+                    );
+
+                    window.location.href =
+                        "{% url 'checkout' %}?mode=buy_now";
+
+                } catch (error) {
+
+                    message.style.color = "red";
+                    message.textContent =
+                        "Unable to start Buy Now. Please try again.";
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>

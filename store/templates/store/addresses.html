@@ -1,0 +1,417 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Saved Addresses | ShopEase</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f5f9;
+            color: #212121;
+        }
+
+        header {
+            background: #172337;
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 35px auto;
+            padding: 0 18px;
+        }
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        .page-heading h1 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        .panel {
+            background: white;
+            padding: 24px;
+            margin-bottom: 22px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #0000000d;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-top: 0;
+        }
+
+        .address-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .address-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .address-card.default {
+            border: 2px solid #2874f0;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 4px;
+            background: #e8f0ff;
+            color: #174ea6;
+            font-size: 12px;
+            margin: 0 6px 12px 0;
+        }
+
+        .default-tag {
+            background: #e4f5e9;
+            color: #176b36;
+        }
+
+        .address-card p {
+            line-height: 1.6;
+            margin: 6px 0;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin: 14px 0 6px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font: inherit;
+        }
+
+        textarea {
+            min-height: 85px;
+            resize: vertical;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 16px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 18px 0;
+        }
+
+        .checkbox-row input {
+            width: auto;
+        }
+
+        .checkbox-row label {
+            margin: 0;
+        }
+
+        button, .button {
+            display: inline-block;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            margin: 5px 4px 0 0;
+        }
+
+        .primary {
+            background: #2874f0;
+            color: white;
+        }
+
+        .secondary {
+            background: #e9edf5;
+            color: #222;
+        }
+
+        .danger {
+            background: #ffebeb;
+            color: #b42318;
+        }
+
+        .actions {
+            margin-top: 14px;
+        }
+
+        .empty {
+            color: #666;
+            padding: 15px 0;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .panel {
+                padding: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <a class="logo" href="{% url 'product_list' %}">ShopEase</a>
+    <nav>
+        <a href="{% url 'account' %}">My Account</a>
+        &nbsp; | &nbsp;
+        <a href="{% url 'product_list' %}">Continue Shopping</a>
+    </nav>
+</header>
+
+<main>
+    <div class="page-heading">
+        <h1>My Saved Addresses</h1>
+        <a class="button secondary" href="{% url 'account' %}">
+            Back to Account
+        </a>
+    </div>
+
+    <section class="panel">
+        <h2>Saved Delivery Addresses</h2>
+
+        {% if addresses %}
+            <div class="address-grid">
+                {% for address in addresses %}
+                    <article class="address-card {% if address.is_default %}default{% endif %}">
+                        <span class="tag">{{ address.address_type }}</span>
+
+                        {% if address.is_default %}
+                            <span class="tag default-tag">
+                                Default Address
+                            </span>
+                        {% endif %}
+
+                        <p><strong>{{ address.full_name }}</strong></p>
+                        <p>{{ address.phone }}</p>
+                        <p>{{ address.address_line }}</p>
+
+                        {% if address.landmark %}
+                            <p>Landmark: {{ address.landmark }}</p>
+                        {% endif %}
+
+                        <p>
+                            {{ address.city }}, {{ address.state }} -
+                            {{ address.pin_code }}
+                        </p>
+
+                        <div class="actions">
+                            <button
+                                type="button"
+                                class="secondary"
+                                onclick="editAddress(
+                                    '{{ address.id }}',
+                                    '{{ address.full_name|escapejs }}',
+                                    '{{ address.phone|escapejs }}',
+                                    '{{ address.address_line|escapejs }}',
+                                    '{{ address.landmark|escapejs }}',
+                                    '{{ address.city|escapejs }}',
+                                    '{{ address.state|escapejs }}',
+                                    '{{ address.pin_code|escapejs }}',
+                                    '{{ address.address_type|escapejs }}',
+                                    '{% if address.is_default %}true{% else %}false{% endif %}'
+                                )">
+                                Edit
+                            </button>
+
+                            {% if not address.is_default %}
+                                <form method="post"
+                                      action="{% url 'set_default_address' address.id %}"
+                                      style="display:inline">
+                                    {% csrf_token %}
+                                    <button class="primary" type="submit">
+                                        Set Default
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                            <form method="post"
+                                  action="{% url 'delete_address' address.id %}"
+                                  style="display:inline"
+                                  onsubmit="return confirm('Delete this saved address?');">
+                                {% csrf_token %}
+                                <button class="danger" type="submit">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty">
+                You have not saved any addresses yet.
+            </p>
+        {% endif %}
+    </section>
+
+    <section class="panel" id="address-form-panel" hidden>
+        <h2>Edit Saved Address</h2>
+
+        <form method="post" action="#" id="address-form">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                <div>
+                    <label for="full_name">Full Name *</label>
+                    <input id="full_name" name="full_name"
+                           maxlength="200" required>
+                </div>
+
+                <div>
+                    <label for="phone">10-Digit Phone Number *</label>
+                    <input id="phone" name="phone"
+                           type="tel" inputmode="numeric"
+                           pattern="[0-9]{10}" maxlength="10" required>
+                </div>
+
+                <div class="full-width">
+                    <label for="address_line">Full Address *</label>
+                    <textarea id="address_line" name="address_line"
+                              maxlength="5000" required></textarea>
+                </div>
+
+                <div class="full-width">
+                    <label for="landmark">Landmark (Optional)</label>
+                    <input id="landmark" name="landmark" maxlength="200">
+                </div>
+
+                <div>
+                    <label for="city">City *</label>
+                    <input id="city" name="city" maxlength="100" required>
+                </div>
+
+                <div>
+                    <label for="state">State *</label>
+                    <input id="state" name="state" maxlength="100" required>
+                </div>
+
+                <div>
+                    <label for="pin_code">6-Digit PIN Code *</label>
+                    <input id="pin_code" name="pin_code"
+                           inputmode="numeric" pattern="[0-9]{6}"
+                           maxlength="6" required>
+                </div>
+
+                <div>
+                    <label for="address_type">Address Type *</label>
+                    <select id="address_type" name="address_type" required>
+                        <option value="Home">Home</option>
+                        <option value="Work">Work</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="checkbox-row">
+                <input type="checkbox" id="is_default" name="is_default">
+                <label for="is_default">
+                    Set as my default address
+                </label>
+            </div>
+
+            <button class="primary" type="submit" id="save-button">
+                Save Changes
+            </button>
+
+            <button class="secondary" type="button"
+                    onclick="cancelEdit()">
+                Cancel
+            </button>
+        </form>
+    </section>
+</main>
+
+<script>
+    const addressForm = document.getElementById("address-form");
+    const addressFormPanel = document.getElementById("address-form-panel");
+
+    function editAddress(
+        id, fullName, phone, addressLine, landmark,
+        city, state, pinCode, addressType, isDefault
+    ) {
+        addressForm.action = `/addresses/${id}/edit/`;
+
+        document.getElementById("full_name").value = fullName;
+        document.getElementById("phone").value = phone;
+        document.getElementById("address_line").value = addressLine;
+        document.getElementById("landmark").value = landmark;
+        document.getElementById("city").value = city;
+        document.getElementById("state").value = state;
+        document.getElementById("pin_code").value = pinCode;
+        document.getElementById("address_type").value = addressType;
+
+        document.getElementById("is_default").checked =
+            isDefault === "true";
+
+        addressFormPanel.hidden = false;
+        addressFormPanel.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function cancelEdit() {
+        addressForm.reset();
+        addressForm.action = "#";
+        addressFormPanel.hidden = true;
+    }
+</script>
+</body>
+</html>

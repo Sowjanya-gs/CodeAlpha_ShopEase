@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist | ShopEase</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        header {
+            background: #172337;
+            color: white;
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .brand {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 18px;
+        }
+
+        .wishlist-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        #wishlist-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            border: 1px solid #e1e5eb;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+        }
+
+        .product-card h3 {
+            font-size: 17px;
+        }
+
+        .price {
+            color: #176b3a;
+            font-weight: bold;
+        }
+
+        button {
+            border: 0;
+            border-radius: 5px;
+            padding: 10px 13px;
+            cursor: pointer;
+            margin: 5px 5px 0 0;
+        }
+
+        .view-button {
+            background: #176bba;
+            color: white;
+        }
+
+        .remove-button {
+            background: #fce8e8;
+            color: #a32121;
+        }
+
+        #empty-message {
+            color: #666;
+            padding: 24px 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #176bba;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a class="brand" href="{% url 'product_list' %}">ShopEase</a>
+        <a href="{% url 'product_list' %}">Continue Shopping</a>
+        <a href="{% url 'cart' %}">🛒 Cart</a>
+    </header>
+
+    <main>
+        <section class="wishlist-panel">
+            <h1>♡ My Wishlist</h1>
+            <p>Your saved favourite products.</p>
+
+            <div id="wishlist-items"></div>
+            <p id="empty-message">Loading your wishlist...</p>
+
+            <a class="back-link" href="{% url 'product_list' %}">
+                ← Continue Shopping
+            </a>
+        </section>
+    </main>
+
+    {{ products|json_script:"wishlist-products-data" }}
+
+    <script>
+        "use strict";
+
+        const WISHLIST_KEY = "shopeaseWishlist";
+        const productsElement = document.getElementById("wishlist-products-data");
+        const wishlistContainer = document.getElementById("wishlist-items");
+        const emptyMessage = document.getElementById("empty-message");
+
+        let products = [];
+
+        try {
+            products = JSON.parse(productsElement.textContent) || [];
+        } catch (error) {
+            emptyMessage.textContent = "Unable to load products. Please refresh.";
+        }
+
+        function getWishlist() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(WISHLIST_KEY)) || [];
+                return Array.isArray(saved) ? saved.map(String) : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function renderWishlist() {
+            wishlistContainer.replaceChildren();
+
+            const savedIds = getWishlist();
+            const savedProducts = products.filter(
+                product => savedIds.includes(String(product.id))
+            );
+
+            emptyMessage.hidden = savedProducts.length > 0;
+            emptyMessage.textContent = "Your wishlist is empty. Add products using the heart buttons.";
+
+            savedProducts.forEach(product => {
+                const card = document.createElement("article");
+                card.className = "product-card";
+
+                if (product.image_url) {
+                    const image = document.createElement("img");
+                    image.src = product.image_url;
+                    image.alt = product.name;
+                    image.onerror = function() {
+                        image.hidden = true;
+                    };
+                    card.appendChild(image);
+                }
+
+                const title = document.createElement("h3");
+                title.textContent = product.name;
+                card.appendChild(title);
+
+                const price = document.createElement("p");
+                price.className = "price";
+                price.textContent = "₹" + product.price;
+                card.appendChild(price);
+
+                const viewLink = document.createElement("a");
+                viewLink.href = "/product/" + product.id + "/";
+                const viewButton = document.createElement("button");
+                viewButton.className = "view-button";
+                viewButton.textContent = "View Product";
+                viewLink.appendChild(viewButton);
+                card.appendChild(viewLink);
+
+                const removeButton = document.createElement("button");
+                removeButton.className = "remove-button";
+                removeButton.textContent = "Remove";
+                removeButton.addEventListener("click", function() {
+                    const updated = getWishlist().filter(
+                        id => id !== String(product.id)
+                    );
+                    localStorage.setItem(WISHLIST_KEY, JSON.stringify(updated));
+                    renderWishlist();
+                });
+                card.appendChild(removeButton);
+
+                wishlistContainer.appendChild(card);
+            });
+        }
+
+        window.addEventListener("storage", function(event) {
+            if (event.key === WISHLIST_KEY || event.key === null) {
+                renderWishlist();
+            }
+        });
+
+        renderWishlist();
+    </script>
+</body>
+</html>

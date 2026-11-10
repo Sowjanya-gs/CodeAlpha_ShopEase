@@ -1,0 +1,974 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | ShopEase</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        header {
+            background: #192957;
+            color: white;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        header h2 {
+            margin: 0;
+        }
+
+        header nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        header a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
+        }
+
+        h1, h2 {
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input:not([type="radio"]),
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: 2px solid #192957;
+            outline-offset: 1px;
+        }
+
+        .address-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 15px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .payment-option:has(input:checked) {
+            border-color: #192957;
+            background: #f1f4fc;
+        }
+
+        .payment-option input[type="radio"] {
+            margin-top: 3px;
+            accent-color: #192957;
+        }
+
+        .payment-option label {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .payment-option small {
+            display: block;
+            color: #666;
+            margin-top: 5px;
+            font-weight: normal;
+            line-height: 1.5;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #192957;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        button:hover {
+            background: #263d78;
+        }
+
+        button:disabled {
+            background: #777;
+            cursor: not-allowed;
+        }
+
+        .secondary-button {
+            background: #eef1f8;
+            color: #192957;
+            border: 1px solid #192957;
+        }
+
+        .secondary-button:hover {
+            background: #e0e6f5;
+        }
+
+        .message {
+            display: none;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .error {
+            display: block;
+            background: #ffe9e9;
+            color: #a00000;
+        }
+
+        .success {
+            display: block;
+            background: #e5f7e9;
+            color: #176329;
+        }
+
+        .note {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px 5%;
+            }
+
+            .container {
+                margin-top: 20px;
+                padding: 0 12px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .address-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h2>ShopEase</h2>
+
+    <nav>
+        <a href="{% url 'product_list' %}">Home</a>
+        <a href="{% url 'cart' %}">Cart</a>
+    </nav>
+</header>
+
+<main class="container">
+    <section class="card">
+        <h1>Checkout</h1>
+        <p>Enter your delivery details and select your payment method.</p>
+
+        <div id="message" class="message" role="alert"
+             aria-live="polite"></div>
+
+        <form id="checkout-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="customer_name">Full Name</label>
+                <input
+                    id="customer_name"
+                    name="customer_name"
+                    type="text"
+                    maxlength="200"
+                    autocomplete="name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    maxlength="254"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="phone">10-digit Phone Number</label>
+                <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    inputmode="numeric"
+                    pattern="[0-9]{10}"
+                    minlength="10"
+                    maxlength="10"
+                    autocomplete="tel"
+                    required
+                >
+            </div>
+
+            <h2>Delivery Address</h2>
+
+            <div class="address-grid">
+
+                <div class="form-group full-width">
+                    <label for="house">
+                        House / Flat / Building Number
+                    </label>
+                    <input
+                        id="house"
+                        name="house"
+                        type="text"
+                        maxlength="200"
+                        autocomplete="address-line1"
+                        placeholder="House or flat number"
+                        required
+                    >
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="street">Street, Area or Locality</label>
+                    <input
+                        id="street"
+                        name="street"
+                        type="text"
+                        maxlength="300"
+                        autocomplete="address-line2"
+                        placeholder="Street, area or locality"
+                        required
+                    >
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="landmark">Landmark (Optional)</label>
+                    <input
+                        id="landmark"
+                        name="landmark"
+                        type="text"
+                        maxlength="200"
+                        placeholder="Near a school, bus stop, etc."
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input
+                        id="city"
+                        name="city"
+                        type="text"
+                        maxlength="100"
+                        autocomplete="address-level2"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <input
+                        id="state"
+                        name="state"
+                        type="text"
+                        maxlength="100"
+                        autocomplete="address-level1"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="pincode">6-digit PIN Code</label>
+                    <input
+                        id="pincode"
+                        name="pincode"
+                        type="text"
+                        inputmode="numeric"
+                        pattern="[0-9]{6}"
+                        minlength="6"
+                        maxlength="6"
+                        autocomplete="postal-code"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="address-type">Address Type</label>
+                    <select id="address-type" name="address_type">
+                        <option value="Home">Home</option>
+                        <option value="Work">Work</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="save-address"
+                class="secondary-button"
+            >
+                Save Address in This Browser
+            </button>
+
+            <button
+                type="button"
+                id="use-location"
+                class="secondary-button"
+            >
+                Use My Current Location
+            </button>
+
+            <p class="note">
+    Your address can be saved in this browser and, when logged in,
+    to your ShopEase account. Current location requires your
+    permission and may not provide a postal address.
+</p>
+
+            <h2>Payment Method</h2>
+
+            <div class="payment-option">
+                <input
+                    type="radio"
+                    id="payment-cod"
+                    name="payment_method"
+                    value="COD"
+                    checked
+                    required
+                >
+
+                <label for="payment-cod">
+                    Cash on Delivery
+                    <small>Pay when your order arrives.</small>
+                </label>
+            </div>
+
+            <div class="payment-option">
+                <input
+                    type="radio"
+                    id="payment-upi"
+                    name="payment_method"
+                    value="UPI"
+                    required
+                >
+
+                <label for="payment-upi">
+                    UPI (Demo)
+                    <small>
+                        This demo option does not transfer any money.
+                    </small>
+                </label>
+            </div>
+
+            <p class="note">
+                Please check your delivery details before placing your order.
+            </p>
+
+            <button type="submit" id="place-order">
+                Place Order
+            </button>
+        </form>
+    </section>
+</main>
+
+{{ products_json|json_script:"products-data" }}
+
+<script>
+"use strict";
+
+const CART_KEY = "shopeaseProductCart";
+const BUY_NOW_KEY = "shopeaseBuyNowItem";
+const isBuyNow = new URLSearchParams(window.location.search)
+    .get("mode") === "buy_now";
+const ADDRESS_KEY = "shopeaseDeliveryAddress";
+
+const productsDataElement = document.getElementById("products-data");
+
+const products = JSON.parse(productsDataElement.textContent);
+
+const checkoutForm = document.getElementById("checkout-form");
+const placeOrderButton = document.getElementById("place-order");
+const messageElement = document.getElementById("message");
+
+let currentCart = {};
+
+function showMessage(message, type) {
+    messageElement.textContent = message;
+    messageElement.className = "message " + type;
+}
+
+function clearMessage() {
+    messageElement.textContent = "";
+    messageElement.className = "message";
+}
+
+function readCart() {
+    try {
+        const saved = localStorage.getItem(CART_KEY);
+
+        if (!saved) {
+            return {};
+        }
+
+        const parsed = JSON.parse(saved);
+
+        if (Array.isArray(parsed)) {
+            const converted = {};
+
+            parsed.forEach(item => {
+                if (item && item.id !== undefined) {
+                    const id = String(item.id);
+                    const quantity = Number(item.quantity ?? 1);
+
+                    converted[id] =
+                        (Number(converted[id]) || 0) +
+                        quantity;
+                }
+            });
+
+            return converted;
+        }
+
+        if (parsed && typeof parsed === "object") {
+            const converted = {};
+
+            Object.entries(parsed).forEach(([id, value]) => {
+                const quantity =
+                    value && typeof value === "object"
+                        ? value.quantity
+                        : value;
+
+                converted[String(id)] = Number(quantity);
+            });
+
+            return converted;
+        }
+
+        return {};
+
+    } catch (error) {
+        console.error("Could not read the saved cart:", error);
+        return {};
+    }
+}
+
+function validateCart() {
+    if (isBuyNow) {
+    try {
+        const savedItem = sessionStorage.getItem(BUY_NOW_KEY);
+        const item = savedItem ? JSON.parse(savedItem) : null;
+
+        currentCart = item && item.id !== undefined
+            ? { [String(item.id)]: Number(item.quantity) }
+            : {};
+    } catch (error) {
+        currentCart = {};
+    }
+} else {
+    currentCart = readCart();
+}
+
+    const entries = Object.entries(currentCart);
+
+    if (entries.length === 0) {
+        placeOrderButton.disabled = true;
+        showMessage(
+            "Your cart is empty. Add products before checkout.",
+            "error"
+        );
+        return false;
+    }
+
+    for (const [id, rawQuantity] of entries) {
+        const product = products.find(
+            item => String(item.id) === String(id)
+        );
+
+        const quantity = Number(rawQuantity);
+
+        if (
+            !product ||
+            !Number.isInteger(quantity) ||
+            quantity < 1
+        ) {
+            placeOrderButton.disabled = true;
+
+            showMessage(
+                "Your cart contains invalid items. Return to your cart and try again.",
+                "error"
+            );
+
+            return false;
+        }
+
+        const stock = Number(product.stock);
+
+        if (!Number.isFinite(stock) || quantity > stock) {
+            placeOrderButton.disabled = true;
+
+            showMessage(
+                product.name + " exceeds the available stock.",
+                "error"
+            );
+
+            return false;
+        }
+    }
+
+    placeOrderButton.disabled = false;
+    clearMessage();
+
+    return true;
+}
+
+function getAddressFields() {
+    return {
+        house: document.getElementById("house").value.trim(),
+        street: document.getElementById("street").value.trim(),
+        landmark: document.getElementById("landmark").value.trim(),
+        city: document.getElementById("city").value.trim(),
+        state: document.getElementById("state").value.trim(),
+        pincode: document.getElementById("pincode").value.trim(),
+        address_type: document.getElementById("address-type").value
+    };
+}
+
+function fillAddressFields(address) {
+    const fields = [
+        "house",
+        "street",
+        "landmark",
+        "city",
+        "state",
+        "pincode"
+    ];
+
+    fields.forEach(key => {
+        document.getElementById(key).value = address[key] || "";
+    });
+
+    document.getElementById("address-type").value =
+        address.address_type || "Home";
+
+    if (address.customer_name) {
+        document.getElementById("customer_name").value =
+            address.customer_name;
+    }
+
+    if (address.phone) {
+        document.getElementById("phone").value = address.phone;
+    }
+
+    if (address.email) {
+        document.getElementById("email").value = address.email;
+    }
+}
+
+
+
+document.getElementById("save-address").addEventListener(
+    "click",
+    async function() {
+        // Validate only the fields needed for a delivery address.
+        const requiredFields = [
+            "customer_name",
+            "phone",
+            "house",
+            "street",
+            "city",
+            "state",
+            "pincode"
+        ];
+
+        for (const fieldId of requiredFields) {
+            const field = document.getElementById(fieldId);
+
+            if (!field.checkValidity()) {
+                field.reportValidity();
+                showMessage(
+                    "Please complete all required address details correctly.",
+                    "error"
+                );
+                return;
+            }
+        }
+
+        const address = getAddressFields();
+
+        address.customer_name =
+            document.getElementById("customer_name").value.trim();
+
+        address.phone =
+            document.getElementById("phone").value.trim();
+
+        address.email =
+            document.getElementById("email").value.trim();
+
+        try {
+            // Save the address in this browser first.
+            localStorage.setItem(
+                ADDRESS_KEY,
+                JSON.stringify(address)
+            );
+
+            const csrfInput = document.querySelector(
+                "[name=csrfmiddlewaretoken]"
+            );
+
+            const response = await fetch(
+                "{% url 'save_checkout_address' %}",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfInput
+                            ? csrfInput.value
+                            : ""
+                    },
+                    body: JSON.stringify(address),
+                    credentials: "same-origin"
+                }
+            );
+
+            if (response.redirected) {
+                showMessage(
+                    "Address saved in this browser. Please log in to save it to your ShopEase account.",
+                    "success"
+                );
+                return;
+            }
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    result.error || "Could not save the address."
+                );
+            }
+
+            showMessage(
+                "Address saved successfully to your browser and ShopEase account.",
+                "success"
+            );
+
+        } catch (error) {
+            showMessage(
+                "Browser address was saved, but account saving failed: "
+                + error.message,
+                "error"
+            );
+        }
+    }
+);
+
+
+document.getElementById("use-location").addEventListener(
+    "click",
+    function() {
+        if (!navigator.geolocation) {
+            showMessage(
+                "Your browser does not support location access.",
+                "error"
+            );
+            return;
+        }
+
+        showMessage(
+            "Requesting permission to access your location...",
+            "success"
+        );
+
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const latitude =
+                    position.coords.latitude.toFixed(6);
+
+                const longitude =
+                    position.coords.longitude.toFixed(6);
+
+                const landmark =
+                    document.getElementById("landmark");
+
+                const coordinates =
+                    "GPS: " + latitude + ", " + longitude;
+
+                if (!landmark.value.includes(coordinates)) {
+                    landmark.value =
+                        (landmark.value
+                            ? landmark.value + " | "
+                            : "") + coordinates;
+                }
+
+                showMessage(
+                    "Location coordinates added as a landmark. Enter your full postal address too.",
+                    "success"
+                );
+            },
+
+            function() {
+                showMessage(
+                    "Location permission was denied or unavailable. Enter your address manually.",
+                    "error"
+                );
+            },
+
+            {
+                enableHighAccuracy: true,
+                timeout: 10000
+            }
+        );
+    }
+);
+
+try {
+    const savedAddress = localStorage.getItem(ADDRESS_KEY);
+
+    if (savedAddress) {
+        fillAddressFields(JSON.parse(savedAddress));
+    }
+
+} catch (error) {
+    console.warn("Could not load the saved address:", error);
+}
+
+checkoutForm.addEventListener(
+    "submit",
+    async function(event) {
+        event.preventDefault();
+
+        if (!checkoutForm.reportValidity()) {
+            return;
+        }
+
+        if (!validateCart()) {
+            return;
+        }
+
+        const cartForOrder = {};
+
+        for (const [id, rawQuantity] of Object.entries(currentCart)) {
+            const product = products.find(
+                item => String(item.id) === String(id)
+            );
+
+            const quantity = Number(rawQuantity);
+
+            if (
+                !product ||
+                !Number.isInteger(quantity) ||
+                quantity < 1 ||
+                quantity > Number(product.stock)
+            ) {
+                showMessage(
+                    "Check the products and quantities in your cart.",
+                    "error"
+                );
+
+                validateCart();
+                return;
+            }
+
+            cartForOrder[String(product.id)] = quantity;
+        }
+
+        const customerName =
+            document.getElementById("customer_name").value.trim();
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const phone =
+            document.getElementById("phone").value.trim();
+
+        const addressFields = getAddressFields();
+
+        if (!/^[0-9]{10}$/.test(phone)) {
+            showMessage(
+                "Enter a valid 10-digit phone number.",
+                "error"
+            );
+            return;
+        }
+
+        if (!/^[0-9]{6}$/.test(addressFields.pincode)) {
+            showMessage(
+                "Enter a valid 6-digit PIN code.",
+                "error"
+            );
+            return;
+        }
+
+        const fullAddress = [
+            addressFields.house,
+            addressFields.street,
+
+            addressFields.landmark
+                ? "Landmark: " + addressFields.landmark
+                : "",
+
+            addressFields.city,
+            addressFields.state,
+            "PIN Code: " + addressFields.pincode,
+            "Address Type: " + addressFields.address_type
+
+        ].filter(Boolean).join(", ");
+
+        const selectedPayment = document.querySelector(
+            'input[name="payment_method"]:checked'
+        );
+
+        if (!selectedPayment) {
+            showMessage(
+                "Please select a payment method.",
+                "error"
+            );
+            return;
+        }
+
+        const formData = {
+    customer_name: customerName,
+    email: email,
+    phone: phone,
+    address: fullAddress,
+    address_details: addressFields,
+    payment_method: selectedPayment.value,
+    cart: cartForOrder
+};
+
+        const csrfInput = document.querySelector(
+            "[name=csrfmiddlewaretoken]"
+        );
+
+        placeOrderButton.disabled = true;
+        placeOrderButton.textContent = "Placing Order...";
+
+        try {
+            const response = await fetch(
+                "{% url 'place_order' %}",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfInput
+                            ? csrfInput.value
+                            : "",
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+
+                    body: JSON.stringify(formData),
+                    credentials: "same-origin"
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(
+                    result.error || "Unable to place your order."
+                );
+            }
+
+            if (isBuyNow) {
+    sessionStorage.removeItem(BUY_NOW_KEY);
+} else {
+    localStorage.removeItem(CART_KEY);
+}
+            
+
+            checkoutForm.reset();
+
+            showMessage(
+                "Order #" + result.order_id +
+                " placed successfully. " +
+                (result.message || "Thank you for shopping with ShopEase."),
+                "success"
+            );
+
+            placeOrderButton.textContent = "Order Placed";
+            placeOrderButton.disabled = true;
+
+        } catch (error) {
+            showMessage(error.message, "error");
+
+            placeOrderButton.disabled = false;
+            placeOrderButton.textContent = "Place Order";
+
+            validateCart();
+        }
+    }
+);
+
+validateCart();
+</script>
+
+</body>
+</html>

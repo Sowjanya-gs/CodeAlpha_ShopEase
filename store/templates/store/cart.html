@@ -1,0 +1,621 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | ShopEase</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f3f6;
+            color: #212121;
+        }
+
+        header {
+            background: #192957;
+            color: white;
+            padding: 16px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .header-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .page-container {
+            max-width: 1150px;
+            margin: 30px auto;
+            padding: 0 18px;
+        }
+
+        .page-title {
+            margin: 0 0 20px;
+            font-size: 25px;
+        }
+
+        .cart-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 300px;
+            align-items: start;
+            gap: 20px;
+        }
+
+        .cart-panel,
+        .summary-panel {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px #0000000d;
+        }
+
+        .cart-panel {
+            padding: 24px;
+        }
+
+        .panel-heading {
+            margin: 0 0 10px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #eee;
+            font-size: 19px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 22px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-info h3 {
+            margin: 0 0 10px;
+            font-size: 17px;
+            overflow-wrap: anywhere;
+        }
+
+        .item-price {
+            margin: 7px 0;
+            color: #555;
+        }
+
+        .item-subtotal {
+            margin: 7px 0;
+            font-weight: bold;
+            color: #192957;
+        }
+
+        .quantity {
+            width: 75px;
+            padding: 9px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 15px;
+        }
+
+        .remove-btn {
+            padding: 9px 12px;
+            border: none;
+            border-radius: 4px;
+            background: #fff0f0;
+            color: #c62828;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {
+            background: #ffe0e0;
+        }
+
+        .summary-panel {
+            padding: 22px;
+        }
+
+        .summary-panel h3 {
+            margin: 0 0 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            color: #777;
+            font-size: 16px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 15px 0;
+            font-size: 15px;
+        }
+
+        .summary-total {
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .checkout-btn,
+        .continue-link {
+            display: block;
+            padding: 14px 16px;
+            border-radius: 4px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .checkout-btn {
+            margin-top: 20px;
+            background: #fb641b;
+            color: white;
+        }
+
+        .checkout-btn:hover {
+            background: #e85a16;
+        }
+
+        .continue-link {
+            margin-top: 15px;
+            background: #e9edf5;
+            color: #192957;
+        }
+
+        .empty-message {
+            padding: 35px 10px;
+            text-align: center;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .empty-message a {
+            display: inline-block;
+            margin-top: 12px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .status-message {
+            color: #b42318;
+            margin-top: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 750px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-panel {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 16px 5%;
+            }
+
+            header h1 {
+                font-size: 24px;
+            }
+
+            .cart-panel {
+                padding: 16px;
+            }
+
+            .cart-item {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .item-info {
+                flex-basis: 100%;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+        }
+        
+.cart-product-image {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 6px;
+    flex-shrink: 0;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-info h3 {
+    margin-top: 0;
+}
+
+@media (max-width: 600px) {
+    .cart-item {
+        flex-wrap: wrap;
+    }
+
+    .cart-product-image {
+        width: 85px;
+        height: 85px;
+    }
+}
+
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>
+        <a href="{% url 'product_list' %}">ShopEase &#128722;</a>
+    </h1>
+
+    <nav class="header-links">
+        <a href="{% url 'product_list' %}">Continue Shopping</a>
+    </nav>
+</header>
+
+<main class="page-container">
+
+    <h2 class="page-title">My Shopping Cart</h2>
+
+    <div class="cart-layout">
+
+        <section class="cart-panel">
+            <h3 class="panel-heading" id="cart-heading">
+                Your Items
+            </h3>
+
+            <div id="cart-items" aria-live="polite"></div>
+
+            <p id="cart-error" class="status-message" role="alert"></p>
+
+            <a class="continue-link" href="{% url 'product_list' %}">
+                &#8592; Continue Shopping
+            </a>
+        </section>
+
+        <aside class="summary-panel">
+            <h3>PRICE DETAILS</h3>
+
+            <div class="summary-row">
+                <span>Items</span>
+                <span id="item-count">0</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>₹<span id="cart-subtotal">0.00</span></span>
+            </div>
+
+            <div class="summary-row">
+                <span>Delivery</span>
+                <span>Free</span>
+            </div>
+
+            <div class="summary-row summary-total">
+                <span>Total Amount</span>
+                <span>₹<span id="cart-total">0.00</span></span>
+            </div>
+
+            <a class="checkout-btn" href="{% url 'checkout' %}">
+                Proceed to Checkout
+            </a>
+        </aside>
+
+    </div>
+
+</main>
+
+{{ products_json|json_script:"products-data" }}
+
+<script>
+    "use strict";
+
+    const cartKey = "shopeaseProductCart";
+
+    const cartItemsElement = document.getElementById("cart-items");
+    const cartHeading = document.getElementById("cart-heading");
+    const itemCountElement = document.getElementById("item-count");
+    const subtotalElement = document.getElementById("cart-subtotal");
+    const totalElement = document.getElementById("cart-total");
+    const errorElement = document.getElementById("cart-error");
+
+    let products = [];
+
+    // Load the product data provided by Django.
+    try {
+        const productsDataElement = document.getElementById("products-data");
+
+        if (productsDataElement) {
+            const parsedProducts = JSON.parse(
+                productsDataElement.textContent
+            );
+
+            if (Array.isArray(parsedProducts)) {
+                products = parsedProducts;
+            }
+        }
+    } catch (error) {
+        console.error("Unable to read Django product data:", error);
+        errorElement.textContent =
+            "Unable to load product details. Please refresh the page.";
+    }
+
+    // Read the saved cart without deleting or resetting it.
+    function getCart() {
+        const savedCart = localStorage.getItem(cartKey);
+
+        if (!savedCart) {
+            return {};
+        }
+
+        const parsedCart = JSON.parse(savedCart);
+
+        // Current product-detail format: {"1": 2, "5": 1}
+        if (
+            parsedCart &&
+            typeof parsedCart === "object" &&
+            !Array.isArray(parsedCart)
+        ) {
+            return parsedCart;
+        }
+
+        // Support the older array format too.
+        if (Array.isArray(parsedCart)) {
+            const convertedCart = {};
+
+            parsedCart.forEach(item => {
+                if (item && item.id !== undefined) {
+                    const id = String(item.id);
+                    const quantity = Number(item.quantity) || 1;
+
+                    convertedCart[id] =
+                        (Number(convertedCart[id]) || 0) + quantity;
+                }
+            });
+
+            return convertedCart;
+        }
+
+        throw new Error("The saved cart has an unsupported format.");
+    }
+
+    // Save in the same object format used by product_detail.html.
+    function saveCart(cart) {
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+    }
+
+    function formatPrice(amount) {
+        return Number(amount).toFixed(2);
+    }
+
+    function renderCart() {
+        cartItemsElement.innerHTML = "";
+        errorElement.textContent = "";
+
+        let cart;
+
+        try {
+            cart = getCart();
+        } catch (error) {
+            console.error("Unable to read saved cart:", error);
+
+            errorElement.textContent =
+                "Unable to read your saved cart. Your saved data has not been deleted.";
+
+            cartHeading.textContent = "Your Items";
+            return;
+        }
+
+        if (!Array.isArray(products)) {
+            errorElement.textContent =
+                "Product details are unavailable. Please refresh the page.";
+            return;
+        }
+
+        let totalAmount = 0;
+        let totalQuantity = 0;
+        let displayedItems = 0;
+
+        // Match saved product IDs against Django product IDs.
+        Object.entries(cart).forEach(([id, savedQuantity]) => {
+            const product = products.find(
+                item => String(item.id) === String(id)
+            );
+
+            // Do not silently delete items that cannot be matched.
+            if (!product) {
+                console.warn(
+                    "No matching Django product found for cart ID:",
+                    id
+                );
+                return;
+            }
+
+            const quantityNumber = savedQuantity && typeof savedQuantity === "object"
+    ? Number(savedQuantity.quantity)
+    : Number(savedQuantity);
+
+            if (
+                !Number.isInteger(quantityNumber) ||
+                quantityNumber < 1
+            ) {
+                console.warn("Invalid quantity for product:", id);
+                return;
+            }
+
+            const stock = Number(product.stock);
+            const maxQuantity = Number.isFinite(stock) && stock > 0
+                ? stock
+                : quantityNumber;
+
+            const quantity = Math.min(quantityNumber, maxQuantity);
+            const price = Number(product.price);
+
+            if (!Number.isFinite(price)) {
+                console.warn("Invalid product price for:", id);
+                return;
+            }
+
+            const subtotal = price * quantity;
+
+            totalAmount += subtotal;
+            totalQuantity += quantity;
+            displayedItems++;
+
+            const row = document.createElement("article");
+            row.className = "cart-item";
+
+            const info = document.createElement("div");
+            info.className = "item-info";
+          
+const image = document.createElement("img");
+image.className = "cart-product-image";
+image.alt = product.name;
+
+if (product.image_url) {
+    image.src = product.image_url;
+} else {
+    image.style.display = "none";
+}
+  
+
+            const name = document.createElement("h3");
+            name.textContent = product.name;
+
+            const priceText = document.createElement("p");
+            priceText.className = "item-price";
+            priceText.textContent = "Price: ₹" + formatPrice(price);
+
+            const subtotalText = document.createElement("p");
+            subtotalText.className = "item-subtotal";
+            subtotalText.textContent =
+                "Subtotal: ₹" + formatPrice(subtotal);
+
+            info.append(name, priceText, subtotalText);
+
+            const quantityInput = document.createElement("input");
+            quantityInput.type = "number";
+            quantityInput.className = "quantity";
+            quantityInput.min = "1";
+            quantityInput.max = String(maxQuantity);
+            quantityInput.value = quantity;
+            quantityInput.setAttribute("aria-label", "Product quantity");
+
+            quantityInput.addEventListener("change", function () {
+                const requestedQuantity = Number(this.value);
+
+                if (
+                    !Number.isInteger(requestedQuantity) ||
+                    requestedQuantity < 1
+                ) {
+                    this.value = quantity;
+                    return;
+                }
+
+                const newCart = getCart();
+                const newQuantity = Math.min(
+                    requestedQuantity,
+                    maxQuantity
+                );
+
+                newCart[String(id)] = newQuantity;
+                saveCart(newCart);
+                renderCart();
+            });
+
+            const removeButton = document.createElement("button");
+            removeButton.type = "button";
+            removeButton.className = "remove-btn";
+            removeButton.textContent = "Remove";
+
+            removeButton.addEventListener("click", function () {
+                const newCart = getCart();
+
+                delete newCart[String(id)];
+
+                saveCart(newCart);
+                renderCart();
+            });
+row.append(image, info, quantityInput, removeButton);
+            cartItemsElement.appendChild(row);
+        });
+
+        cartHeading.textContent =
+            "Your Items (" + totalQuantity + ")";
+
+        itemCountElement.textContent = totalQuantity;
+        subtotalElement.textContent = formatPrice(totalAmount);
+        totalElement.textContent = formatPrice(totalAmount);
+
+        if (displayedItems === 0) {
+            cartItemsElement.innerHTML = `
+                <div class="empty-message">
+                    <p>Your cart has no matching products to display.</p>
+                    <p>Your saved cart data has not been cleared.</p>
+                    <a href="{% url 'product_list' %}">
+                        Browse Products
+                    </a>
+                </div>
+            `;
+        }
+    }
+
+    // Update the display when the page opens.
+    renderCart();
+
+    // Update if the cart changes in another browser tab.
+    window.addEventListener("storage", function (event) {
+        if (event.key === cartKey) {
+            renderCart();
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,399 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Sign Up | ShopEase</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f3f6;
+            color: #212121;
+        }
+
+        header {
+            background: #172337;
+            padding: 18px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .brand {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .home-link {
+            font-size: 14px;
+        }
+
+        main {
+            min-height: calc(100vh - 65px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 16px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 430px;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 22px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            margin: 0 0 24px;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 13px 8px;
+            border: none;
+            background: white;
+            color: #555;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #2874f0;
+            border-bottom-color: #2874f0;
+        }
+
+        .field {
+            margin-bottom: 17px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cfd3d8;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2874f0;
+            box-shadow: 0 0 0 2px rgba(40, 116, 240, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            border: none;
+            border-radius: 6px;
+            padding: 14px;
+            background: #2874f0;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .submit-btn:hover {
+            background: #1760d0;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 6px;
+            background: #fff0f0;
+            color: #b42318;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .bottom-link {
+            margin-top: 22px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .bottom-link a {
+            color: #2874f0;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .bottom-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 23px 18px;
+            }
+
+            header {
+                padding: 16px 5%;
+            }
+
+            .brand {
+                font-size: 23px;
+            }
+
+            .home-link {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a class="brand" href="{% url 'product_list' %}">ShopEase</a>
+        <a class="home-link" href="{% url 'product_list' %}">
+            Continue Shopping
+        </a>
+    </header>
+
+    <main>
+        <section class="auth-card">
+            <h1>Welcome to ShopEase</h1>
+            <p class="subtitle">
+                Login to your account or create a new one to get started.
+            </p>
+
+            {% if message %}
+                <div class="message" role="alert">{{ message }}</div>
+            {% endif %}
+
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="message" role="alert">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="tabs">
+                <button
+                    type="button"
+                    class="tab"
+                    id="loginTab"
+                    onclick="showTab('login')">
+                    Login
+                </button>
+
+                <button
+                    type="button"
+                    class="tab"
+                    id="signupTab"
+                    onclick="showTab('signup')">
+                    Sign Up
+                </button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="loginForm" method="post" autocomplete="off">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="login">
+
+                <!-- Hidden decoy fields discourage browser autofill. -->
+                <input
+                    type="text"
+                    name="username"
+                    autocomplete="username"
+                    tabindex="-1"
+                    aria-hidden="true"
+                    style="position:absolute; left:-9999px;"
+                >
+
+                <input
+                    type="password"
+                    name="password"
+                    autocomplete="current-password"
+                    tabindex="-1"
+                    aria-hidden="true"
+                    style="position:absolute; left:-9999px;"
+                >
+
+                <div class="field">
+                    <label for="loginEmail">Email Address</label>
+                    <input
+                        type="email"
+                        id="loginEmail"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="off"
+                        maxlength="254"
+                        required>
+                </div>
+
+                <div class="field">
+                    <label for="loginPassword">Password</label>
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="off"
+                        required>
+                </div>
+
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
+
+            <p class="bottom-link" id="loginSwitchLink">
+                Don't have an account?
+                <a href="{% url 'login_signup' %}?tab=signup">
+                    Create an account
+                </a>
+            </p>
+
+            <!-- SIGN UP FORM -->
+            <form id="signupForm" method="post" class="hidden" autocomplete="off">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="signup">
+
+                <div class="field">
+                    <label for="fullName">Full Name</label>
+                    <input
+                        type="text"
+                        id="fullName"
+                        name="full_name"
+                        value="{{ full_name|default:'' }}"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        maxlength="150"
+                        required>
+                </div>
+
+                <div class="field">
+                    <label for="signupEmail">Email Address</label>
+                    <input
+                        type="email"
+                        id="signupEmail"
+                        name="email"
+                        value="{{ email|default:'' }}"
+                        placeholder="Enter your email"
+                        autocomplete="off"
+                        maxlength="254"
+                        required>
+                </div>
+
+                <div class="field">
+                    <label for="signupPassword">Password</label>
+                    <input
+                        type="password"
+                        id="signupPassword"
+                        name="password"
+                        placeholder="Create a strong password"
+                        autocomplete="new-password"
+                        required>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    Create Account
+                </button>
+            </form>
+
+            <p class="bottom-link hidden" id="signupSwitchLink">
+                Already have an account?
+                <a href="{% url 'login_signup' %}?tab=login">
+                    Login
+                </a>
+            </p>
+
+            <div class="bottom-link">
+                <a href="{% url 'product_list' %}">
+                    Back to ShopEase Home
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function showTab(tab) {
+            const loginForm = document.getElementById("loginForm");
+            const signupForm = document.getElementById("signupForm");
+            const loginTab = document.getElementById("loginTab");
+            const signupTab = document.getElementById("signupTab");
+            const loginSwitchLink = document.getElementById("loginSwitchLink");
+            const signupSwitchLink = document.getElementById("signupSwitchLink");
+
+            const isSignup = tab === "signup";
+
+            loginForm.classList.toggle("hidden", isSignup);
+            signupForm.classList.toggle("hidden", !isSignup);
+
+            loginTab.classList.toggle("active", !isSignup);
+            signupTab.classList.toggle("active", isSignup);
+
+            loginSwitchLink.classList.toggle("hidden", isSignup);
+            signupSwitchLink.classList.toggle("hidden", !isSignup);
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const requestedTab = params.get("tab");
+        const serverTab = "{{ active_tab|default:'login'|escapejs }}";
+
+        const initialTab =
+            serverTab === "signup" ||
+            requestedTab === "signup" ||
+            params.get("error") === "email_exists"
+                ? "signup"
+                : "login";
+
+        showTab(initialTab);
+
+        // Clear login credentials when returning to this page from browser history.
+        window.addEventListener("pageshow", function () {
+            const loginForm = document.getElementById("loginForm");
+
+            if (loginForm && !loginForm.dataset.submitted) {
+                loginForm.reset();
+            }
+        });
+
+        document.getElementById("loginForm").addEventListener("submit", function () {
+            this.dataset.submitted = "true";
+        });
+    </script>
+</body>
+</html>

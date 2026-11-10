@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | ShopEase</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #192957;
+        }
+
+        header {
+            background: #192957;
+            color: white;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        header h2 {
+            margin: 0;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        header a:hover {
+            text-decoration: underline;
+        }
+
+        header nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        header nav a {
+            margin-left: 0;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        main > h1 {
+            margin-bottom: 8px;
+            font-size: 32px;
+        }
+
+        .page-description {
+            color: #667085;
+            margin-bottom: 25px;
+        }
+
+        .order-card {
+            background: white;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            border-radius: 14px;
+            box-shadow: 0 3px 14px #0000000d;
+        }
+
+        .order-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 18px;
+            margin-bottom: 8px;
+        }
+
+        .order-heading h3 {
+            margin: 0 0 8px;
+            font-size: 21px;
+        }
+
+        .item-details {
+            color: #667085;
+            margin-top: 7px;
+            font-size: 14px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #795800;
+        }
+
+        .status-confirmed {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-shipped {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .status-delivered {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 18px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .item-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            min-width: 0;
+        }
+
+        .item-image {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            border: 1px solid #edf0f4;
+            border-radius: 10px;
+            background: #fff;
+            padding: 6px;
+            flex-shrink: 0;
+        }
+
+        .image-placeholder {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #667085;
+            font-size: 12px;
+            border: 1px solid #edf0f4;
+            border-radius: 10px;
+            background: #f8fafc;
+            flex-shrink: 0;
+        }
+
+        .item-info {
+            min-width: 0;
+        }
+
+        .item-name {
+            font-weight: bold;
+            font-size: 17px;
+            overflow-wrap: anywhere;
+        }
+
+        .item-price {
+            font-weight: bold;
+            font-size: 17px;
+            white-space: nowrap;
+            color: #192957;
+        }
+
+        .empty {
+            background: white;
+            padding: 40px 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .button {
+            display: inline-block;
+            background: #192957;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 7px;
+            text-decoration: none;
+            margin-top: 15px;
+        }
+
+        .button:hover {
+            background: #293d76;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px 20px;
+            }
+
+            header nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            header a {
+                margin: 0;
+            }
+
+            main {
+                margin: 24px auto;
+                padding: 0 12px;
+            }
+
+            main > h1 {
+                font-size: 27px;
+            }
+
+            .order-card {
+                padding: 18px 14px;
+            }
+
+            .item {
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .item-left {
+                gap: 10px;
+            }
+
+            .item-image,
+            .image-placeholder {
+                width: 72px;
+                height: 72px;
+            }
+
+            .item-name {
+                font-size: 14px;
+            }
+
+            .item-price {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h2>ShopEase</h2>
+
+        <nav>
+            <a href="/">Home</a>
+            <a href="/cart/">Cart</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>My Orders</h1>
+        <p class="page-description">
+            Track your orders and view the products you have purchased.
+        </p>
+
+        {% for order in orders %}
+            <section class="order-card">
+                <div class="order-heading">
+                    <div>
+                        <h3>Order #{{ order.id }}</h3>
+                        <div class="item-details">
+                            Placed on {{ order.created_at|date:"d M Y, h:i A" }}
+                        </div>
+                    </div>
+
+                    <span class="status
+                        {% if order.status == 'Pending' %}status-pending
+                        {% elif order.status == 'Confirmed' %}status-confirmed
+                        {% elif order.status == 'Shipped' %}status-shipped
+                        {% elif order.status == 'Delivered' %}status-delivered
+                        {% elif order.status == 'Cancelled' %}status-cancelled
+                        {% endif %}">
+                        {% if order.status == 'Delivered' %}
+                            Received
+                        {% else %}
+                            {{ order.status }}
+                        {% endif %}
+                    </span>
+                </div>
+
+                {% for item in order.items.all %}
+                    <div class="item">
+                        <div class="item-left">
+                            {% if item.product and item.product.image_url %}
+                                <img
+                                    class="item-image"
+                                    src="{{ item.product.image_url }}"
+                                    alt="{{ item.product_name }}"
+                                    loading="lazy"
+                                >
+                            {% else %}
+                                <div class="image-placeholder">
+                                    Image unavailable
+                                </div>
+                            {% endif %}
+
+                            <div class="item-info">
+                                <div class="item-name">
+                                    {{ item.product_name }}
+                                </div>
+
+                                <div class="item-details">
+                                    Quantity: {{ item.quantity }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item-price">
+                            ₹{{ item.subtotal|floatformat:2 }}
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No product details are available for this order.</p>
+                {% endfor %}
+            </section>
+        {% empty %}
+            <section class="empty">
+                <h2>No orders yet</h2>
+                <p>Your placed orders will appear here.</p>
+                <a class="button" href="/">Start Shopping</a>
+            </section>
+        {% endfor %}
+    </main>
+</body>
+</html>

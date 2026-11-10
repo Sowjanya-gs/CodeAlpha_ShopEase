@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | ShopEase</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f5f9;
+            color: #212121;
+        }
+
+        header {
+            background: #172337;
+            color: white;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .brand {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 0 18px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 10px;
+            padding: 28px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 27px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .account-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .account-card {
+            display: block;
+            padding: 20px;
+            border: 1px solid #e0e4eb;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #212121;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .account-card:hover {
+            border-color: #2874f0;
+            background: #f8fbff;
+        }
+
+        .account-card strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 17px;
+        }
+
+        .account-card span {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 24px;
+            color: #176bba;
+            text-decoration: none;
+        }
+        
+.back-link {
+    display: inline-block;
+    margin-top: 24px;
+    color: #176bba;
+    text-decoration: none;
+}
+
+.logout-card {
+    width: 100%;
+    text-align: left;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+}
+
+.logout-card button {
+    display: block;
+    margin-bottom: 8px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: #d32f2f;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.logout-card:hover {
+    border-color: #d32f2f;
+    background: #fff8f8;
+}
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <a class="brand" href="{% url 'product_list' %}">ShopEase</a>
+        <a href="{% url 'cart' %}">🛒 My Cart</a>
+    </header>
+
+    <main>
+        <section class="panel">
+            <h1>My Account</h1>
+            <p class="subtitle">Welcome to your ShopEase account. Choose an option below.</p>
+
+            <div class="account-links">
+                <a class="account-card" href="{% url 'my_orders' %}">
+                    <strong>📦 My Orders</strong>
+                    <span>View your orders and their current status.</span>
+                </a>
+
+                <a class="account-card" href="{% url 'addresses' %}">
+                    <strong>📍 My Addresses</strong>
+                    <span>Open your address section.</span>
+                </a>
+
+                <a class="account-card" href="{% url 'wishlist' %}">
+                    <strong>♡ My Wishlist</strong>
+                    <span>View your saved favourite products.</span>
+                </a>
+
+                <a class="account-card" href="{% url 'cart' %}">
+                    <strong>🛒 My Cart</strong>
+                    <span>Review products in your shopping cart.</span>
+                </a>
+            </div>
+            
+<form method="post"
+      action="{% url 'logout' %}"
+      class="account-card logout-card"
+      onsubmit="return confirm('Are you sure you want to log out?');">
+
+    {% csrf_token %}
+
+    <button type="submit">Logout</button>
+
+    <span>Securely sign out of your ShopEase account.</span>
+</form>
+
+            <a class="back-link" href="{% url 'product_list' %}">
+                ← Continue Shopping
+            </a>
+        </section>
+    </main>
+</body>
+</html>

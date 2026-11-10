@@ -1,0 +1,746 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ShopEase | Online Shopping</title>
+
+    <link rel="stylesheet" href="{% static 'store/css/style.css' %}">
+</head>
+
+<body>
+
+<!-- TOP HEADER -->
+<header class="site-header">
+    <div class="top-header">
+
+        <a href="/" class="brand">
+            <span class="brand-icon">S</span>
+            <div>
+                <div class="brand-name">ShopEase</div>
+                <div class="brand-tagline">Discover more. Shop smarter.</div>
+            </div>
+        </a>
+
+        <!-- SEARCH -->
+        <form class="main-search" id="header-search-form">
+            <input
+                type="search"
+                id="header-search"
+                placeholder="Search for products, brands and more..."
+                autocomplete="off"
+            >
+            <button type="submit" aria-label="Search">🔍</button>
+        </form>
+
+        <!-- HEADER ACTIONS -->
+        <div class="header-actions">
+
+
+<a href="{% url 'login_signup' %}?tab=login"
+   class="header-account">
+
+    <span>
+        <small>Hello, User</small>
+        <strong>Login / Sign Up</strong>
+    </span>
+</a>
+
+<a href="{% url 'wishlist' %}" class="header-wishlist">
+    <span>♡</span>
+    <span>
+        <small>My</small>
+        <strong>Wishlist</strong>
+    </span>
+</a>
+<!-- CART -->
+            <a href="{% url 'cart' %}" class="header-cart"
+               aria-label="Open shopping cart">
+                <span class="cart-symbol">🛒</span>
+                <span class="cart-count" id="cart-count">0</span>
+                <span>
+                    <small>My</small>
+                    <strong>Cart</strong>
+                </span>
+            </a>
+            
+<!-- MY ADDRESSES -->
+<a href="{% url 'addresses' %}"
+   class="header-address"
+   aria-label="Manage saved addresses">
+    <span class="header-icon">📍</span>
+    <span>
+        <small>Delivery</small>
+        <strong>My Addresses</strong>
+    </span>
+</a>
+
+            <!-- MY ORDERS -->
+            <a href="{% url 'my_orders' %}" class="header-cart"
+               aria-label="View my orders">
+                <span class="cart-symbol">📦</span>
+                <span>
+                    <small>My</small>
+                    <strong>Orders</strong>
+                </span>
+            </a>
+{% if user.is_authenticated %}
+<form method="post"
+      action="{% url 'logout' %}"
+      class="header-logout-form"
+      onsubmit="return confirm('Are you sure you want to log out?');">
+
+    {% csrf_token %}
+
+    <button type="submit" class="header-logout-button">
+        Logout
+    </button>
+</form>
+{% endif %}
+        
+        </div>
+    </div>
+
+    <!-- NAVIGATION -->
+      
+
+            
+    
+    <nav class="main-nav">
+        <a href="/" class="nav-active">☰ All Categories</a>
+        <a href="#product-grid">Home</a>
+        <a href="#product-grid">Best Sellers</a>
+        <a href="#deals">Deals</a>
+        <a href="#product-grid">New Arrivals</a>
+        <a href="#footer">Customer Service</a>
+    </nav>
+</header>
+
+
+<!-- MAIN PAGE -->
+<main class="shop-layout">
+
+    <!-- CATEGORY SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            <span>☰</span>
+            All Categories
+        </div>
+
+        <button type="button" class="category-item active-category" data-category="all">
+            <span>🏠</span> All Products
+        </button>
+
+        <button type="button" class="category-item" data-category="electronics">
+            <span>💻</span> Electronics
+        </button>
+
+        <button type="button" class="category-item" data-category="fashion">
+            <span>👕</span> Fashion
+        </button>
+
+        <button type="button" class="category-item" data-category="home">
+            <span>🏠</span> Home & Kitchen
+        </button>
+
+        <button type="button" class="category-item" data-category="toys">
+            <span>🧸</span> Toys & Games
+        </button>
+
+        <button type="button" class="category-item" data-category="sports">
+            <span>⚽</span> Sports & Outdoors
+        </button>
+
+        <button type="button" class="category-item" data-category="books">
+            <span>📚</span> Books
+        </button>
+
+        <button type="button" class="category-item" data-category="groceries">
+            <span>🛒</span> Groceries
+        </button>
+
+        <button type="button" class="category-item" data-category="beauty">
+            <span>💄</span> Beauty & Personal Care
+        </button>
+
+        <button type="button" class="category-item" data-category="automotive">
+            <span>🚗</span> Automotive
+        </button>
+
+        <button type="button" class="category-item" data-category="more">
+            <span>＋</span> More Categories
+        </button>
+
+        <div class="sidebar-box">
+            <h3>Why Shop With Us?</h3>
+            <p>✓ Best Prices</p>
+            <p>✓ Fast Delivery</p>
+            <p>✓ Secure Shopping</p>
+            <p>✓ Easy Returns</p>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN SHOP CONTENT -->
+    <section class="main-content">
+
+        <!-- HERO BANNER -->
+        <section class="hero-banner">
+
+            <div class="hero-text">
+                <p class="hero-small">UPGRADE YOUR</p>
+                <h1>Tech Essentials</h1>
+                <p>Latest gadgets. Best prices.</p>
+
+                <button type="button" class="hero-button" data-category="electronics">
+                    Shop Now →
+                </button>
+            </div>
+
+            <div class="hero-products">
+                <div class="hero-product">💻</div>
+                <div class="hero-product">🎧</div>
+                <div class="hero-product">⌚</div>
+                <div class="hero-product">📱</div>
+            </div>
+
+        </section>
+
+
+        <!-- BENEFITS -->
+        <section class="benefits">
+
+            <div class="benefit">
+                <span>🚚</span>
+                <div>
+                    <strong>Fast Shipping</strong>
+                    <small>Quick delivery</small>
+                </div>
+            </div>
+
+            <div class="benefit">
+                <span>↩️</span>
+                <div>
+                    <strong>Easy Returns</strong>
+                    <small>Hassle-free returns</small>
+                </div>
+            </div>
+
+            <div class="benefit">
+                <span>🛡️</span>
+                <div>
+                    <strong>Secure Payments</strong>
+                    <small>100% secure checkout</small>
+                </div>
+            </div>
+
+            <div class="benefit">
+                <span>🎧</span>
+                <div>
+                    <strong>24/7 Support</strong>
+                    <small>We're here to help</small>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- PROMOTIONAL CARDS -->
+        <section class="promo-section" id="deals">
+
+            <div class="promo-card fashion-promo">
+                <div>
+                    <small>FASHION SALE</small>
+                    <h3>Up to 50% Off</h3>
+                    <button type="button" data-category="fashion">Shop Now →</button>
+                </div>
+                <span>👟</span>
+            </div>
+
+            <div class="promo-card home-promo">
+                <div>
+                    <small>HOME ESSENTIALS</small>
+                    <h3>Make Your Home Better</h3>
+                    <button type="button" data-category="home">Shop Now →</button>
+                </div>
+                <span>🛋️</span>
+            </div>
+
+            <div class="promo-card electronics-promo">
+                <div>
+                    <small>TOP ELECTRONICS</small>
+                    <h3>Best Tech Deals</h3>
+                    <button type="button" data-category="electronics">Shop Now →</button>
+                </div>
+                <span>💻</span>
+            </div>
+
+            <div class="promo-card beauty-promo">
+                <div>
+                    <small>BEAUTY & PERSONAL CARE</small>
+                    <h3>Glow Every Day</h3>
+                    <button type="button" data-category="beauty">Shop Now →</button>
+                </div>
+                <span>💄</span>
+            </div>
+
+        </section>
+
+
+        <!-- PRODUCTS HEADER -->
+        <div class="products-heading">
+            <div>
+                <h2>Best Sellers</h2>
+                <p>Popular products customers love</p>
+            </div>
+
+            <button type="button" class="view-all" id="view-all-products">
+                View All →
+            </button>
+        </div>
+
+
+        <!-- SEARCH AND SORT -->
+        <div class="product-toolbar">
+
+            <input
+                type="search"
+                id="search-input"
+                placeholder="Search products..."
+                aria-label="Search products"
+            >
+
+            <select id="sort-select" aria-label="Sort products">
+                <option value="default">Sort by: Featured</option>
+                <option value="low-high">Price: Low to High</option>
+                <option value="high-low">Price: High to Low</option>
+                <option value="name">Name: A to Z</option>
+            </select>
+
+        </div>
+
+
+        <!-- PRODUCT GRID -->
+        <div class="product-grid" id="product-grid">
+
+            {% for product in products %}
+
+           <article
+    class="product-card"
+    data-id="{{ product.id }}"
+    data-name="{{ product.name|escape }}"
+    data-price="{{ product.price }}"
+    data-category="{{ product.category|default:''|lower|escape }}"
+    data-description="{{ product.description|escape }}"
+>
+                <!-- CLICKABLE PRODUCT IMAGE -->
+                <div class="product-image">
+
+                    {% if product.image_url %}
+
+                        <a
+                            href="{% url 'product_detail' product.id %}"
+                            aria-label="View {{ product.name|escape }}"
+                        >
+                            <img
+                                src="{{ product.image_url }}"
+                                alt="{{ product.name }}"
+                                loading="lazy"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                            >
+
+                            <div class="image-fallback" style="display: none;">
+                                🛍️
+                            </div>
+                        </a>
+
+                    {% else %}
+
+                        <a
+                            href="{% url 'product_detail' product.id %}"
+                            aria-label="View {{ product.name|escape }}"
+                        >
+                            <div class="image-fallback visible">
+                                🛍️
+                            </div>
+                        </a>
+
+                    {% endif %}
+
+                    <button
+                        type="button"
+                        class="wishlist-button"
+                        aria-label="Add to wishlist"
+                    >
+                        ♡
+                    </button>
+
+                </div>
+
+
+                <!-- PRODUCT INFORMATION -->
+                <div class="product-info">
+
+                    <div class="product-category">
+                        {{ product.category|default:"ShopEase" }}
+                    </div>
+
+                    <h3>{{ product.name }}</h3>
+
+                    <div class="rating">
+                        <span>★★★★☆</span>
+                        <small>4.2</small>
+                    </div>
+
+                    <a
+                        href="{% url 'product_detail' product.id %}"
+                        class="details-link"
+                    >
+                        View Details
+                    </a>
+
+                    <div class="price-row">
+                        <span class="product-price">₹{{ product.price }}</span>
+                    </div>
+
+                    {% if product.stock > 0 %}
+                        <p class="stock">✓ In stock</p>
+                    {% else %}
+                        <p class="stock out-stock">Out of stock</p>
+                    {% endif %}
+
+                </div>
+
+            </article>
+
+            {% empty %}
+
+                <p>No products available.</p>
+
+            {% endfor %}
+
+        </div>
+
+        <p id="no-results" class="no-results" hidden>
+            No products found.
+        </p>
+
+    </section>
+
+</main>
+
+
+<!-- FOOTER -->
+<footer class="footer" id="footer">
+
+    <div class="footer-content">
+
+        <div>
+            <h3>ShopEase</h3>
+            <p>Discover more. Shop smarter.</p>
+        </div>
+
+        <div>
+            <h4>Shop</h4>
+            <a href="#product-grid">All Products</a>
+            <a href="#deals">Deals</a>
+            <a href="{% url 'cart' %}">Shopping Cart</a>
+        </div>
+
+        <div>
+            <h4>Customer Service</h4>
+            <a href="#">Help Center</a>
+            <a href="#">Returns</a>
+            <a href="#">Contact Us</a>
+        </div>
+
+        <div>
+            <h4>Categories</h4>
+            <a href="#product-grid">Electronics</a>
+            <a href="#product-grid">Fashion</a>
+            <a href="#product-grid">Books</a>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 ShopEase. All rights reserved.
+    </div>
+
+</footer>
+
+
+<!-- JAVASCRIPT -->
+<script>
+const CART_KEY = "shopeaseProductCart";
+const searchInput = document.getElementById("search-input");
+const headerSearch = document.getElementById("header-search");
+const sortSelect = document.getElementById("sort-select");
+const productGrid = document.getElementById("product-grid");
+const noResults = document.getElementById("no-results");
+
+let cart = {};
+
+function loadCart() {
+    try {
+        cart = JSON.parse(localStorage.getItem(CART_KEY)) || {};
+
+        if (typeof cart !== "object" || cart === null || Array.isArray(cart)) {
+            cart = {};
+        }
+    } catch (error) {
+        cart = {};
+    }
+}
+
+
+function renderCart() {
+    const cartCount = document.getElementById("cart-count");
+
+    if (!cartCount) return;
+
+    let totalQuantity = 0;
+
+    Object.values(cart).forEach(function(item) {
+        if (item && typeof item === "object") {
+            totalQuantity += Number(item.quantity) || 0;
+        } else {
+            totalQuantity += Number(item) || 0;
+        }
+    });
+
+    cartCount.textContent = totalQuantity;
+}
+
+
+function getProductCards() {
+    if (!productGrid) return [];
+
+    return Array.from(productGrid.querySelectorAll(".product-card"));
+}
+
+function updateNoResults(visibleCount) {
+    if (noResults) {
+        noResults.hidden = visibleCount > 0;
+    }
+}
+
+function filterProducts() {
+    if (!searchInput || !sortSelect || !productGrid) return;
+
+    const search = searchInput.value.toLowerCase().trim();
+    const cards = getProductCards();
+    const visible = [];
+
+    cards.forEach(function(card) {
+        const name = (card.dataset.name || "").toLowerCase();
+        const description = (card.dataset.description || "").toLowerCase();
+        const category = (card.dataset.category || "").toLowerCase();
+
+        const matches =
+            name.includes(search) ||
+            description.includes(search) ||
+            category.includes(search);
+
+        card.hidden = !matches;
+
+        if (matches) visible.push(card);
+    });
+
+    const sort = sortSelect.value;
+
+    visible.sort(function(a, b) {
+        if (sort === "low-high") {
+            return Number(a.dataset.price) - Number(b.dataset.price);
+        }
+
+        if (sort === "high-low") {
+            return Number(b.dataset.price) - Number(a.dataset.price);
+        }
+
+        if (sort === "name") {
+            return (a.dataset.name || "").localeCompare(b.dataset.name || "");
+        }
+
+        return 0;
+    });
+
+    visible.forEach(function(card) {
+        productGrid.appendChild(card);
+    });
+
+    updateNoResults(visible.length);
+}
+
+function showCategory(category) {
+    if (searchInput) searchInput.value = "";
+    if (headerSearch) headerSearch.value = "";
+
+    document.querySelectorAll(".category-item").forEach(function(item) {
+        item.classList.toggle("active-category", item.dataset.category === category);
+    });
+
+    let visibleCount = 0;
+
+    getProductCards().forEach(function(card) {
+        const productCategory = (card.dataset.category || "").toLowerCase();
+        const show = category === "all" || productCategory.includes(category.toLowerCase());
+
+        card.hidden = !show;
+
+        if (show) visibleCount++;
+    });
+
+    updateNoResults(visibleCount);
+
+    if (productGrid) {
+        productGrid.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+}
+
+/* HEADER SEARCH */
+const headerSearchForm = document.getElementById("header-search-form");
+
+if (headerSearchForm) {
+    headerSearchForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        if (searchInput && headerSearch) {
+            searchInput.value = headerSearch.value;
+            filterProducts();
+
+            if (productGrid) {
+                productGrid.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        }
+    });
+}
+
+/* LIVE SEARCH */
+if (searchInput) {
+    searchInput.addEventListener("input", filterProducts);
+}
+
+/* SORT */
+if (sortSelect) {
+    sortSelect.addEventListener("change", filterProducts);
+}
+
+/* SIDEBAR CATEGORIES */
+document.querySelectorAll(".category-item").forEach(function(button) {
+    button.addEventListener("click", function() {
+        showCategory(button.dataset.category || "all");
+    });
+});
+
+/* PROMOTIONAL BUTTONS */
+document.querySelectorAll(".hero-button, .promo-card button").forEach(function(button) {
+    button.addEventListener("click", function() {
+        const category = button.dataset.category;
+
+        if (category) {
+            showCategory(category);
+        }
+    });
+});
+
+/* VIEW ALL */
+const viewAllButton = document.getElementById("view-all-products");
+
+if (viewAllButton) {
+    viewAllButton.addEventListener("click", function() {
+        if (searchInput) searchInput.value = "";
+        if (headerSearch) headerSearch.value = "";
+        if (sortSelect) sortSelect.value = "default";
+
+        showCategory("all");
+        filterProducts();
+    });
+}
+
+/* REFRESH CART COUNT WHEN CART CHANGES IN ANOTHER TAB */
+window.addEventListener("storage", function(event) {
+    if (event.key === CART_KEY || event.key === null) {
+        loadCart();
+        renderCart();
+    }
+});
+
+/* WISHLIST FUNCTIONALITY */
+const WISHLIST_KEY = "shopeaseWishlist";
+
+function getWishlist() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(WISHLIST_KEY)) || [];
+        return Array.isArray(saved) ? saved.map(String) : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function saveWishlist(wishlist) {
+    localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist));
+}
+
+function updateWishlistButtons() {
+    const wishlist = getWishlist();
+
+    document.querySelectorAll(".product-card").forEach(function(card) {
+        const productId = card.dataset.id;
+        const button = card.querySelector(".wishlist-button");
+
+        if (!productId || !button) return;
+
+        const isSaved = wishlist.includes(String(productId));
+
+        button.textContent = isSaved ? "♥" : "♡";
+        button.setAttribute(
+            "aria-label",
+            isSaved ? "Remove from wishlist" : "Add to wishlist"
+        );
+        button.setAttribute("aria-pressed", String(isSaved));
+    });
+}
+
+document.querySelectorAll(".wishlist-button").forEach(function(button) {
+    button.addEventListener("click", function() {
+        const card = button.closest(".product-card");
+        if (!card || !card.dataset.id) return;
+
+        const productId = String(card.dataset.id);
+        const wishlist = getWishlist();
+        const index = wishlist.indexOf(productId);
+
+        if (index === -1) {
+            wishlist.push(productId);
+        } else {
+            wishlist.splice(index, 1);
+        }
+
+        saveWishlist(wishlist);
+        updateWishlistButtons();
+    });
+});
+
+window.addEventListener("storage", function(event) {
+    if (event.key === WISHLIST_KEY || event.key === null) {
+        updateWishlistButtons();
+    }
+});
+
+/* INITIAL LOAD */
+loadCart();
+renderCart();
+updateWishlistButtons();
+</script>
+
+
+
+</body>
+</html>
